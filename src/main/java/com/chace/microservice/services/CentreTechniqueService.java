@@ -94,7 +94,12 @@ public class CentreTechniqueService {
     @Scheduled(fixedRate = 1000)
     public void getPeriodicCentreTechniqueInfos() {
         String message = "Msg::" + System.currentTimeMillis();
+
+        // Programmatically send a message to a broker destination using the SimpMessagingTemplate
+        // used when we are Outside of a "@MessageMapping" method (e.g. in a scheduled task, service, or event listener)
+        // when we want to push a message to clients without waiting for them to send anything first.
         messagingTemplate.convertAndSend(SOCKET_OUTPUT_PREFIX + SOCKET_OUTPUT_MESSAGE_TOPIC, message);
+
         log.info("____ Broadcasted message : " + message);
     }
 
