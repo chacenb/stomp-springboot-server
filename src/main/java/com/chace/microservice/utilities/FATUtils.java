@@ -12,6 +12,18 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class FATUtils {
 
+    /// You only specify @MessageMapping("/chat")
+    // because Spring "strips away" the Prefixes("/app") from client destinations.
+    // That’s why we don’t write @MessageMapping("/app/chat"), but instead just @MessageMapping("/chat").
+    public static final String SOCKET_ENDPOINT = "/socket";
+
+    public static final String SOCKET_INPUT_PREFIX = "/ws-input";
+    public static final String SOCKET_OUTPUT_PREFIX = "/ws-output";
+
+    public static final String SOCKET_INPUT_CHAT_CHANNEL = "/chat";
+    public static final String SOCKET_OUTPUT_MESSAGE_TOPIC = "/messages";
+
+
     public static final String NOM_CARTE = "CARTE_";
     public static final int START_INDEX = 0;
     public static final int NB_ROWS = 20;

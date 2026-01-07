@@ -8,11 +8,13 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 
+import static com.chace.microservice.utilities.FATUtils.*;
+
 @Controller
 public interface ISocketController {
 
-    @MessageMapping("/chat")   // client sends to /app/chat
-    @SendTo("/topic/messages") // server broadcasts to /topic/messages
+    @MessageMapping(SOCKET_INPUT_CHAT_CHANNEL)   // client sends to /app/chat
+    @SendTo(SOCKET_OUTPUT_PREFIX + SOCKET_OUTPUT_MESSAGE_TOPIC) // server broadcasts to this topic
     public OutputMessage processMessage(InputMessage input);
 
 

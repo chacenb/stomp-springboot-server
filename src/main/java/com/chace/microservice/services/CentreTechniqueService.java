@@ -13,6 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,13 +24,14 @@ import java.util.Optional;
 
 import static com.chace.microservice.repositories.CentreTechniqueRepository.contains;
 import static com.chace.microservice.repositories.CentreTechniqueRepository.isDeleted;
-import static com.chace.microservice.utilities.FATUtils.ftaPagingSorting;
+import static com.chace.microservice.utilities.FATUtils.*;
 
 @Slf4j @Service @Transactional @RequiredArgsConstructor
 public class CentreTechniqueService {
 
     private final CentreTechniqueRepository centreTechniqueRepo;
     private final VilleRepository villeRepository;
+    private final SimpMessagingTemplate messagingTemplate;
 
 //    private final RepartiteurRepository repartiteurRepository;
 
@@ -88,5 +91,11 @@ public class CentreTechniqueService {
         return centreTechniqueRepo.save(toDelete);
     }
 
+    @Scheduled(fixedRate = 1000)
+    public void getPeriodicCentreTechniqueInfos() {
+        String message = "Msg::" + System.currentTimeMillis();
+        messagingTemplate.convertAndSend(SOCKET_OUTPUT_PREFIX + SOCKET_OUTPUT_MESSAGE_TOPIC, message);
+        log.info("____ Broadcasted message : " + message);
+    }
 
 }
