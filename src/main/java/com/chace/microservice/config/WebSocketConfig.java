@@ -15,7 +15,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         /* Clients connect here: ws://localhost:8081/socket */
-        registry.addEndpoint(SOCKET_ENDPOINT).setAllowedOrigins("*").withSockJS();
+        // registry.addEndpoint(SOCKET_ENDPOINT).setAllowedOrigins("*").withSockJS();    // This works too but raises error .....
+        registry.addEndpoint(SOCKET_ENDPOINT).setAllowedOriginPatterns("*").withSockJS(); // ✅ allows any origin with credentials .withSockJS();
     }
 
     @Override

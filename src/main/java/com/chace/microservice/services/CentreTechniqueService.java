@@ -1,6 +1,8 @@
 package com.chace.microservice.services;
 
 
+import com.chace.microservice.controllers.ifaces.ISocketController;
+import com.chace.microservice.controllers.ifaces.ISocketController.OutputMessage;
 import com.chace.microservice.exceptions.CustomException;
 import com.chace.microservice.exceptions.EExceptionCode;
 import com.chace.microservice.model.dto.CentreTechniqueDto;
@@ -18,13 +20,16 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
+import java.util.Date;
 import java.util.Objects;
 import java.util.Optional;
 
 import static com.chace.microservice.repositories.CentreTechniqueRepository.contains;
 import static com.chace.microservice.repositories.CentreTechniqueRepository.isDeleted;
 import static com.chace.microservice.utilities.FATUtils.*;
+import static com.fasterxml.jackson.databind.type.LogicalType.DateTime;
 
 @Slf4j @Service @Transactional @RequiredArgsConstructor
 public class CentreTechniqueService {
@@ -93,12 +98,13 @@ public class CentreTechniqueService {
 
     @Scheduled(fixedRate = 1000)
     public void getPeriodicCentreTechniqueInfos() {
-        String message = "Msg::" + System.currentTimeMillis();
+        String message = new Date().toString(); // Just an example message, could be any info you want to broadcast
+        OutputMessage outputMessage = new OutputMessage(message);
 
         // Programmatically send a message to a broker destination using the SimpMessagingTemplate
         // used when we are Outside of a "@MessageMapping" method (e.g. in a scheduled task, service, or event listener)
         // when we want to push a message to clients without waiting for them to send anything first.
-        messagingTemplate.convertAndSend(SOCKET_OUTPUT_PREFIX + SOCKET_OUTPUT_MESSAGE_TOPIC, message);
+        messagingTemplate.convertAndSend(SOCKET_OUTPUT_PREFIX + SOCKET_OUTPUT_MESSAGE_TOPIC, outputMessage);
 
         log.info("____ Broadcasted message : " + message);
     }
